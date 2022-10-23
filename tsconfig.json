@@ -101,7 +101,11 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */,
     "baseUrl": "src",
     "paths":{
-      "@entities/*":["models/entities/*"]
+      "@entities/*":["models/entities/*"],
+      "@models/*":["models/*"],
+      "@tasks/*":["tasks/*"],
+      "@mailer/*":["mailer/*"],
+      "@controllers/*":["controllers/*"]
     }
   }
 }
