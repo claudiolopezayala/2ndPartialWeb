@@ -18,8 +18,11 @@ export default class User {
     @Column({type:'datetime', nullable: false})
     public creationDateTime: Date;
 
-    @Column({type:'datetime', nullable:false,})
+    @Column({type:'datetime', nullable:false})
     public updateDateTime: Date;
+
+    @Column({type: 'boolean', nullable: false})
+    public verify: boolean;
 
     public constructor(_username: string, _password: string, _mail: string){
         this.username = _username;
