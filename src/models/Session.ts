@@ -13,10 +13,12 @@ export default class Session{
         this.tokenSesion = token;
     }
 
+    
+
     public static crearSesionParaUsuario (user: User): Session{
         const data = {
-            idUser: user.id,
-            //TODO
+            emailUser: user.mail,
+            UsernameUser: user.username
         };
         const tokenSesion = jwt.sign(
             {data},

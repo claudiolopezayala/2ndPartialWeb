@@ -1,4 +1,5 @@
-import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
+import DatabaseConnection from '../../database/DatabaseConnection';
+import {Entity, Column, PrimaryGeneratedColumn, Repository} from 'typeorm';
 
 @Entity({name: 'user'})
 export default class User {
@@ -31,4 +32,38 @@ export default class User {
         this.creationDateTime = new Date();
         this.updateDateTime = new Date();
     }
+    public static async getRepositoryUser(): Promise<Repository<User>> {
+        const databaseConnection = await DatabaseConnection.getConectedInstance();
+        return databaseConnection.getRepository(User);
+    }
+    public static async registrar(
+        nombreUsuario: string,
+        password: string,
+        nombreCompleto: string
+    ): Promise<User> {
+        const repositorioAutos = await this.getRepositoryUser();
+
+        const usuario = new User(
+            nombreUsuario,
+            password,
+            nombreCompleto
+        );
+
+        return usuario;
+    }
+    public static async buscarPorNombreUsuarioYPassword(
+        username: string,
+        password: string
+    ): Promise<User> {
+        const repositorioUsuarios = await this.getRepositoryUser();
+
+        const usuario = await repositorioUsuarios.findOneBy({ password, username });
+
+        if (!usuario) {
+            throw new Error('ErrorUsuarioNoEncontrado');
+        }
+
+        return usuario;
+    }
+    
 }

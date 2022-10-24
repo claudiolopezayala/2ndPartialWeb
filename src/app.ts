@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import cors, {CorsOptions} from 'cors';
 import bodyParser from 'body-parser';
 import Test from './controllers/Test';
+import AuthenticationController from './controllers/AuthenticationController';
 
 const app: Application = express();
 
@@ -14,5 +15,6 @@ app.use(bodyParser.json());
 app.use(cors());
 
 Test.mount(app);
+AuthenticationController.mount(app);
 
 export default app;

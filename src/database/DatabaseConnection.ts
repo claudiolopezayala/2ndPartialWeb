@@ -1,10 +1,11 @@
-import User from '@entities/User';
+import User from '../models/entities/User';
+import VerificationCodes from '../models/entities/VerificationCodes';
 import { DataSource, ObjectLiteral, EntityTarget, Repository } from 'typeorm';
 
 export default class DatabaseConnection {
     private static dataSource: DataSource;
 
-    public static async getConectedInsance(): Promise<DataSource>{
+    public static async getConectedInstance(): Promise<DataSource>{
         if(!DatabaseConnection.dataSource){
             DatabaseConnection.dataSource = new DataSource({
                 type: 'mysql',
@@ -26,7 +27,7 @@ export default class DatabaseConnection {
     public static async getRepository<Entity extends ObjectLiteral>(
         entityTarget: EntityTarget<Entity>
     ): Promise<Repository<Entity>>{
-        const dataSource = await DatabaseConnection.getConectedInsance();
+        const dataSource = await DatabaseConnection.getConectedInstance();
         return dataSource.getRepository(entityTarget);
     }
 }
