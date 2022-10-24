@@ -2,11 +2,12 @@ import User from '@entities/User';
 import { Request, Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken';
 import HTTPStatusCodes from 'http-status-codes';
+import superSecretDontPushJson from '../superSecretDontPush.json';
 
 export default class Session{
     public tokenSesion : string;
 
-    private static secret = 'jorge te amo'
+    private static secret = superSecretDontPushJson.Secret;
 
     private constructor (token:string){
         this.tokenSesion = token;

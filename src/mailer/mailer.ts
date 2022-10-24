@@ -1,4 +1,5 @@
 import nodemailer = require('nodemailer');
+import superSecretDontPushJson from '../superSecretDontPush.json';
 
 export const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -6,10 +7,10 @@ export const transporter = nodemailer.createTransport({
     secure: true, // true for 465, false for other ports
     auth: {
      user: 'wproyectoweb@gmail.com', // generated ethereal user
-     pass: ''
+     pass: superSecretDontPushJson.EmailPassword
     }
 });
 
 transporter.verify().then(()=>{
-    console.log('Ready to send emails')
+    console.log('Ready to send emails');
 })
