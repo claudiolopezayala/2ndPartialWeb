@@ -17,14 +17,14 @@ export default class Test {
 
     private async sendMail (req: Request, res: Response): Promise<void>{
         try{
-            await SendMailTask('claudioalejandro4@gmail.com','<h1>Test<h1>','Subject test');
+            await SendMailTask('','<h1>Test<h1>','Subject test');
             res.status(HttpStatusCodes.OK).end();
         }catch(e){
             res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).end();
             console.error(e);
         }
         
-        
+
     }
 
     public static mount(app: Application): Test {

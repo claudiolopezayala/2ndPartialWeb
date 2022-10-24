@@ -6,7 +6,7 @@ import HTTPStatusCodes from 'http-status-codes';
 export default class Session{
     public tokenSesion : string;
 
-    private static secret = 'fortinaiti o la babaye'
+    private static secret = 'jorge te amo'
 
     private constructor (token:string){
         this.tokenSesion = token;
