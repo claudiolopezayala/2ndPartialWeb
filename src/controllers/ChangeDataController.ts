@@ -3,7 +3,6 @@ import { Request, Response, Application } from "express";
 import Session from  '../models/Session';
 import HttpStatusCodes from 'http-status-codes';
 import User from '../models/entities/User';
-import { QueryFailedError } from "typeorm";
 
 interface ChangePasswordBody{
     mail: string;
@@ -19,44 +18,38 @@ export default class ChangeDataController extends BaseController{
     }
 
     private async ChangePassword (req: Request, res: Response):Promise<void>{
-        try{
-            const{
-                mail,
-                oldPassword,
-                newPassword
-            } = <ChangePasswordBody>req.body;
-            try{
-                const repositoryUser = await User.getRepositoryUser()
-                
-                const user = await repositoryUser.findOneBy({mail, password: oldPassword})
-
-                if(!user){
-                    res.status(HttpStatusCodes.FORBIDDEN).end();
-                    return;
-                }
-
-                //*************************************************might not work 
-                user.password = newPassword
-
-                try {
-                    await repositoryUser.save(user);
-                } catch (e) {
-                    if (e instanceof QueryFailedError && e.message.includes('ER_DUP_ENTRY')) {
-                        throw new Error('ErrorModeloDuplicado');
-                    }
         
-                    throw e;
-                }
-                res.status(HttpStatusCodes.OK).json(user);
+        const{
+            mail,
+            oldPassword,
+            newPassword
+        } = <ChangePasswordBody>req.body;
 
-            }catch(e){
-                console.error(e);
-                res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).end();
+        if(!mail || !oldPassword || !newPassword){
+            res.status(HttpStatusCodes.BAD_REQUEST).end
+            return;
+        }
+
+        try{
+            const repositoryUser = await User.getRepositoryUser()
+            
+            const user = await repositoryUser.findOneBy({mail, password: oldPassword})
+
+            if(!user){
+                res.status(HttpStatusCodes.FORBIDDEN).end();
                 return;
             }
+
+            user.password = newPassword;
+
+            await repositoryUser.save(user);
+
+            res.status(HttpStatusCodes.OK).end();
+
         }catch(e){
             console.error(e);
-            res.status(HttpStatusCodes.BAD_REQUEST).end();
+            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).end();
+            return;
         }
     }
 

@@ -1,4 +1,4 @@
-import User from '@entities/User';
+import User from './entities/User';
 import { Request, Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken';
 import HTTPStatusCodes from 'http-status-codes';

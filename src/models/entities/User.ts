@@ -1,6 +1,6 @@
 import DatabaseConnection from '../../database/DatabaseConnection';
-import {Entity, Column, PrimaryGeneratedColumn, Repository} from 'typeorm';
-import Mail from 'nodemailer/lib/mailer';
+import {Entity, Column, PrimaryGeneratedColumn, Repository, ManyToOne, OneToMany} from 'typeorm';
+import MailVerificationCode from './MailVerificationCode';
 
 @Entity({name: 'user'})
 export default class User {
@@ -26,6 +26,9 @@ export default class User {
     @Column({type: 'boolean', nullable: false, default:false})
     public verify: boolean;
 
+    @OneToMany(()=>MailVerificationCode,(mailVerificationCode)=>mailVerificationCode.user)
+    mailVerificationCodes: MailVerificationCode[];
+
     public constructor(_username: string, _password: string, _mail: string){
         this.username = _username;
         this.password = _password;
@@ -34,7 +37,7 @@ export default class User {
         this.updateDateTime = new Date();
     }
     public static async getRepositoryUser(): Promise<Repository<User>> {
-        const databaseConnection = await DatabaseConnection.getConectedInstance();
+        const databaseConnection = await DatabaseConnection.getConnectedInstance();
         return databaseConnection.getRepository(User);
     }
     

@@ -1,9 +1,10 @@
 import express, { Application } from 'express';
 import cors, {CorsOptions} from 'cors';
 import bodyParser from 'body-parser';
-import Test from './controllers/Test';
 import AuthenticationController from './controllers/AuthenticationController';
 import ChangeDataController from './controllers/ChangeDataController';
+import MailVerificationController from './controllers/MailVerficationController';
+import RecoverPasswordController from './controllers/RecoverPasswordController';
 
 const app: Application = express();
 
@@ -15,8 +16,9 @@ const CorsOptions: CorsOptions={
 app.use(bodyParser.json());
 app.use(cors());
 
-Test.mount(app);
+MailVerificationController.mount(app);
 AuthenticationController.mount(app);
 ChangeDataController.mount(app);
+RecoverPasswordController.mount(app);
 
 export default app;

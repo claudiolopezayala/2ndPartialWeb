@@ -17,7 +17,7 @@ interface LoginRequestBody {
 
 export default class AuthenticationController extends BaseController {
     protected initializeRouter(): void {
-        this.router.post('/signIn', this.registro);
+        this.router.post('/signUp', this.registro);
         this.router.post('/logIn', this.iniciarSesion);
     }
 
