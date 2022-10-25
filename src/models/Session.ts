@@ -30,7 +30,7 @@ export default class Session{
 
     public static ValidarSesion(req: Request, res: Response, next: NextFunction): void{
         try{
-            const tokenSesion = <string>req.headers['token-sesion'];
+            const tokenSesion = <string>req.headers['token-session'];
             if(!tokenSesion){
                 res.status(HTTPStatusCodes.UNAUTHORIZED).json({
                     message:"Session token wasn't sent"

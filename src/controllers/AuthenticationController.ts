@@ -7,7 +7,7 @@ import BaseController from './BaseController';
 interface RegistroRequestBody {
     nombreUsuario: string;
     password: string;
-    nombreCompleto: string;
+    mail: string;
 }
 
 interface LoginRequestBody {
@@ -17,8 +17,8 @@ interface LoginRequestBody {
 
 export default class AuthenticationController extends BaseController {
     protected initializeRouter(): void {
-        this.router.post('/registro', this.registro);
-        this.router.post('/iniciarSesion', this.iniciarSesion);
+        this.router.post('/signIn', this.registro);
+        this.router.post('/logIn', this.iniciarSesion);
     }
 
     private async registro(req: Request, res: Response): Promise<void> {
@@ -26,15 +26,17 @@ export default class AuthenticationController extends BaseController {
             const {
                 nombreUsuario,
                 password,
-                nombreCompleto
+                mail
             } = <RegistroRequestBody>req.body;
 
-            if (!nombreUsuario || !password || !nombreCompleto) {
+            if (!nombreUsuario || !password || !mail) {
                 res.status(HttpStatusCodes.BAD_REQUEST).end();
                 return;
             }
 
-            const nuevoUsuario = await User.registrar(nombreUsuario, password, nombreCompleto);
+            const repositoryUser = await User.getRepositoryUser();
+
+            const nuevoUsuario = await repositoryUser.save(new User(nombreUsuario, password, mail));
 
             const sesion = Session.crearSesionParaUsuario(nuevoUsuario);
 
