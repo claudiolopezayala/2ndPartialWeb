@@ -1,5 +1,6 @@
 import DatabaseConnection from '../../database/DatabaseConnection';
 import {Entity, Column, PrimaryGeneratedColumn, Repository} from 'typeorm';
+import Mail from 'nodemailer/lib/mailer';
 
 @Entity({name: 'user'})
 export default class User {
@@ -22,7 +23,7 @@ export default class User {
     @Column({type:'datetime', nullable:false})
     public updateDateTime: Date;
 
-    @Column({type: 'boolean', nullable: false})
+    @Column({type: 'boolean', nullable: false, default:false})
     public verify: boolean;
 
     public constructor(_username: string, _password: string, _mail: string){
@@ -36,21 +37,7 @@ export default class User {
         const databaseConnection = await DatabaseConnection.getConectedInstance();
         return databaseConnection.getRepository(User);
     }
-    public static async registrar(
-        nombreUsuario: string,
-        password: string,
-        nombreCompleto: string
-    ): Promise<User> {
-        const repositorioAutos = await this.getRepositoryUser();
-
-        const usuario = new User(
-            nombreUsuario,
-            password,
-            nombreCompleto
-        );
-
-        return usuario;
-    }
+    
     public static async buscarPorNombreUsuarioYPassword(
         username: string,
         password: string

@@ -1,8 +1,8 @@
 import BaseController from "./BaseController";
 import { Request, Response, Application } from "express";
-import Session from  '@models/Session';
+import Session from  '../models/Session';
 import HttpStatusCodes from 'http-status-codes';
-import User from '@entities/User';
+import User from '../models/entities/User';
 import { QueryFailedError } from "typeorm";
 
 interface ChangePasswordBody{
@@ -15,7 +15,7 @@ interface ChangePasswordBody{
 export default class ChangeDataController extends BaseController{
     protected initializeRouter(): void {
         this.router.all('*',Session.ValidarSesion);
-        this.router.put('/ChangePassword',this.ChangePassword);
+        this.router.put('/changePassword',this.ChangePassword);
     }
 
     private async ChangePassword (req: Request, res: Response):Promise<void>{
@@ -61,7 +61,7 @@ export default class ChangeDataController extends BaseController{
     }
 
     public static mount(app: Application): ChangeDataController {
-        return new ChangeDataController(app,'/ChangeData');
+        return new ChangeDataController(app,'/changeData');
     }
 
 }

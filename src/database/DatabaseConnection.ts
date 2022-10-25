@@ -1,5 +1,5 @@
 import User from '../models/entities/User';
-import VerificationCodes from '../models/entities/VerificationCodes';
+import VerificationCodes from '../models/entities/MailVerificationCode';
 import { DataSource, ObjectLiteral, EntityTarget, Repository } from 'typeorm';
 
 export default class DatabaseConnection {
