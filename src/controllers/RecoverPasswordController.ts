@@ -30,7 +30,13 @@ export default class RecoverPasswordController extends BaseController{
             }            
 
             const mailVerificationCodeRepository = await MailVerificationCode.getMailRepositoryVerificationCode();
-            const mailVerificationCode = await mailVerificationCodeRepository.createQueryBuilder("MailVerificationCode").leftJoinAndSelect("MailVerificationCode.User","User").getMany();
+            //const mailVerificationCode = await mailVerificationCodeRepository.createQueryBuilder("MailVerificationCode").leftJoinAndSelect("MailVerificationCode.User","User").getMany();
+
+            const mailVerificationCode = await mailVerificationCodeRepository.find({
+                relations: {
+                    user: true,
+                },
+            })
             const fiveMinutesInMiliseconds = 5 * 60 * 1000;
             if(!mailVerificationCode || ((new Date()).getTime() - mailVerificationCode[0].creationDateTime.getTime()) > fiveMinutesInMiliseconds){
                 res.status(HttpStatusCodes.FORBIDDEN).end();
@@ -47,6 +53,7 @@ export default class RecoverPasswordController extends BaseController{
                 return;
             }
             user.password = newPassword;
+            user.updateDateTime = new Date();
             await userRepository.save(user);
 
             res.status(HttpStatusCodes.OK).end();
