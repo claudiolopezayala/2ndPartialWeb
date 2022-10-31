@@ -17,7 +17,7 @@ export default class MailVerificationController extends BaseController{
     protected initializeRouter(): void {
         this.router.all('*', Session.ValidarSesion);
         this.router.get('/sendVerificationMail', this.sendMailVerificationMail);
-        this.router.post('/verifyMail:mailVerificationCode', this.verifyMail)
+        this.router.post('/verifyMail', this.verifyMail)
     }
 
     private async sendMailVerificationMail(req: Request, res: Response): Promise<void>{
@@ -66,7 +66,7 @@ export default class MailVerificationController extends BaseController{
             }))[0];
 
             const fiveMinutesInMiliseconds = 5 * 60 * 1000;
-            if(!mailVerificationCode || ((new Date()).getTime() - mailVerificationCode.creationDateTime.getTime()) > fiveMinutesInMiliseconds){
+            if(!mailVerificationCode || ((new Date()).getTime() - mailVerificationCode.creationDateTime.getTime()) < fiveMinutesInMiliseconds){
                 res.status(HttpStatusCodes.FORBIDDEN).end();
                 return;
             }
