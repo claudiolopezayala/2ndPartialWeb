@@ -19,13 +19,13 @@ export default class MailVerificationCode {
         this.user = _user;
         this.creationDateTime = new Date();
     }
-    public static async getMailRepositoryVerificationCode(): Promise<Repository<MailVerificationCode>> {
+    public static async getMailVerificationCodeRepository(): Promise<Repository<MailVerificationCode>> {
         const databaseConnection = await DatabaseConnection.getConnectedInstance();
         return databaseConnection.getRepository(MailVerificationCode);
     }
 
     public static async createMailVerificationCode (_user: User): Promise<MailVerificationCode>{
-        const repositoryMailVerificationCode = await MailVerificationCode.getMailRepositoryVerificationCode();
+        const repositoryMailVerificationCode = await MailVerificationCode.getMailVerificationCodeRepository();
         const provitionalId = Math.floor(Math.random()*(999999+1));
         let existingMailVerificationCode = await repositoryMailVerificationCode.findOneBy({id:provitionalId})
 

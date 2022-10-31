@@ -24,7 +24,7 @@ export default class User {
     public updateDateTime: Date;
 
     @Column({type: 'boolean', nullable: false, default:false})
-    public verify: boolean;
+    public isVerified: boolean;
 
     @OneToMany(()=>MailVerificationCode,(mailVerificationCode)=>mailVerificationCode.user)
     mailVerificationCodes: MailVerificationCode[];

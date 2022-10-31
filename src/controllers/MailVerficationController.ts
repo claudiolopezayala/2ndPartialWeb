@@ -9,6 +9,9 @@ import SendMailTask from "../tasks/SendMailTask";
 interface sendMailVerificationMailBody{
     mail: string;
 }
+interface verifyMailBody{
+    mailVerificationCodeId: number;
+}
 
 export default class MailVerificationController extends BaseController{
     protected initializeRouter(): void {
@@ -28,12 +31,15 @@ export default class MailVerificationController extends BaseController{
             }
             const user = await (await userRepository).findOneBy({mail});
             if(!user){
-                res.status(HttpStatusCodes.BAD_REQUEST).end();
+                res.status(HttpStatusCodes.FORBIDDEN).end();
                 return;
             }
-            const mailVerificationCode = await MailVerificationCode.createMailVerificationCode(user);
 
-            await SendMailTask(mail,`<h1>Verify mail</h1><p>click the following link to verify your mail <b>${mailVerificationCode}</b></p>`,'Verify mail');
+            const mailVerificationCodeRepository = await MailVerificationCode.getMailVerificationCodeRepository();
+
+            const mailVerificationCode = await mailVerificationCodeRepository.save(await MailVerificationCode.createMailVerificationCode(user));
+
+            await SendMailTask(mail,`<h1>Verify mail</h1><p>click the following link to verify your mail (not ready yet, code: <b>${mailVerificationCode.id}</b></p>`,'Verify mail');
 
             res.status(HttpStatusCodes.OK).end();
         }catch(e){
@@ -44,38 +50,36 @@ export default class MailVerificationController extends BaseController{
 
     private async verifyMail(req: Request, res: Response): Promise<void>{
         try{
-            let mailVerificationCodeId: number;
-            try{
-                mailVerificationCodeId = parseInt(req.params.mailVerificationCode)
-            }catch{
+            const {mailVerificationCodeId} = <verifyMailBody> req.body;
+
+            if(!mailVerificationCodeId){
                 res.status(HttpStatusCodes.BAD_REQUEST).end();
                 return;
             }
 
-            const mailVerificationCodeRepository = await MailVerificationCode.getMailRepositoryVerificationCode();
+            const mailVerificationCodeRepository = await MailVerificationCode.getMailVerificationCodeRepository();
 
-            const mailVerificationCode = await mailVerificationCodeRepository.findOneBy({id: mailVerificationCodeId});
+            const mailVerificationCode = (await mailVerificationCodeRepository.find({
+                relations: {
+                    user: true,
+                },
+            }))[0];
 
             const fiveMinutesInMiliseconds = 5 * 60 * 1000;
-            if(!mailVerificationCode || ((new Date()).getTime() - mailVerificationCode.creationDateTime.getTime()) < fiveMinutesInMiliseconds){
+            if(!mailVerificationCode || ((new Date()).getTime() - mailVerificationCode.creationDateTime.getTime()) > fiveMinutesInMiliseconds){
                 res.status(HttpStatusCodes.FORBIDDEN).end();
-            }
-
-            const verifyBool = <sendMailVerificationMailBody> req.body;
-
-            if(!verifyBool) {
-                res.status(HttpStatusCodes.BAD_REQUEST).end();
                 return;
             }
-
+            
             const userRepository = await User.getRepositoryUser();
-            const user = await userRepository.findOneBy({mail : mailVerificationCode?.user.mail})
+            const user = mailVerificationCode.user;
             
             if(!user){
                 res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).end();
                 return;
             }
-            user.verify = true;
+            user.isVerified = true;
+            user.updateDateTime = new Date();
             await userRepository.save(user);
 
             res.status(HttpStatusCodes.OK).end();
