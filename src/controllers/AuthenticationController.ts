@@ -80,6 +80,4 @@ export default class AuthenticationController extends BaseController {
         return new AuthenticationController(app, '/auth');
     }
 
-    
-
 }
