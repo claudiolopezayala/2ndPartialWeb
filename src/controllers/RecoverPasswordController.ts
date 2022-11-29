@@ -94,7 +94,11 @@ export default class RecoverPasswordController extends BaseController{
             
             const mailVerificationCode = await mailVerificationCodeRepository.save(await MailVerificationCode.createMailVerificationCode(user));
 
-            await SendMailTask(mail,`<h1>Password recovery</h1><p>click the following link to recover your password (not ready yet, code: <b>${mailVerificationCode.id}</b>)</p>`,'Password recovery');
+            await SendMailTask(mail,`
+                <h1>Password recovery</h1>
+                <h3>Code: <b>${mailVerificationCode.id}</b></h3>`,
+                'Password recovery'
+            );
             
             res.status(HttpStatusCodes.OK).end();
         }catch(e){
