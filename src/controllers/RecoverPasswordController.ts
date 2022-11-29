@@ -37,7 +37,7 @@ export default class RecoverPasswordController extends BaseController{
                 },
             }))[0];
 
-            const fiveMinutesInMiliseconds = 5 * 60 * 1000;
+            const fiveMinutesInMiliseconds = 10 * 60 * 1000;
             if(!mailVerificationCode || ((new Date()).getTime() - mailVerificationCode.creationDateTime.getTime()) < fiveMinutesInMiliseconds){
                 res.status(HttpStatusCodes.FORBIDDEN).end();
                 return;
