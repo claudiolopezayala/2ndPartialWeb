@@ -26,7 +26,7 @@ export default class ChangeDataController extends BaseController{
         } = <ChangePasswordBody>req.body;
 
         if(!mail || !oldPassword || !newPassword){
-            res.status(HttpStatusCodes.BAD_REQUEST).end
+            res.status(HttpStatusCodes.BAD_REQUEST).end();
             return;
         }
 
