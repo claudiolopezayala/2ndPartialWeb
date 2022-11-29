@@ -47,8 +47,8 @@ export default class AuthenticationController extends BaseController {
                 return;
             }
 
-            console.error(e);
-            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).end();
+            //console.error(e);
+            res.status(HttpStatusCodes.CONFLICT).end();
         }
     }
     private async iniciarSesion(req: Request, res: Response): Promise<void> {

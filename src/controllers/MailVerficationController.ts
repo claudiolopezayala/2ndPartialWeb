@@ -59,20 +59,33 @@ export default class MailVerificationController extends BaseController{
 
             const mailVerificationCodeRepository = await MailVerificationCode.getMailVerificationCodeRepository();
 
-            const mailVerificationCode = (await mailVerificationCodeRepository.find({
+            const mailVerificationCodes = (await mailVerificationCodeRepository.find({
                 relations: {
                     user: true,
                 },
-            }))[0];
+            }));
+            var mailverifactioncode : MailVerificationCode
 
-            const fiveMinutesInMiliseconds = 5 * 60 * 1000;
-            if(!mailVerificationCode || ((new Date()).getTime() - mailVerificationCode.creationDateTime.getTime()) < fiveMinutesInMiliseconds){
+            mailVerificationCodes.forEach(element => {
+                if (element.id == mailVerificationCodeId){
+                    mailverifactioncode = element;
+                    return;
+                }
+            });
+
+            if(!(mailverifactioncode!)){
+                res.status(HttpStatusCodes.FORBIDDEN).end();
+                return;
+            }
+
+            const fiveMinutesInMiliseconds = 10 * 60 * 1000;
+            if(((new Date()).getTime() - mailverifactioncode.creationDateTime.getTime()) < fiveMinutesInMiliseconds){
                 res.status(HttpStatusCodes.FORBIDDEN).end();
                 return;
             }
             
             const userRepository = await User.getRepositoryUser();
-            const user = mailVerificationCode.user;
+            const user = mailverifactioncode.user;
             
             if(!user){
                 res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).end();
