@@ -16,7 +16,7 @@ interface changePassword{
 
 export default class RecoverPasswordController extends BaseController{
     protected initializeRouter(): void {
-        this.router.set('/sendRecuperationMail',this.sendRecuperationMail);
+        this.router.post('/sendRecuperationMail',this.sendRecuperationMail);
         this.router.put('/changePassword',this.changePassword);
     }
 
